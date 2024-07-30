@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configure Your Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .config-container {
+            width: 90vw;
+            max-width: 600px;
+            margin: 20px;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .config-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .config-container input,
+        .config-container textarea,
+        .config-container select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .error-message {
+            color: red;
+            margin-bottom: 10px;
+        }
+        .success-message {
+            color: green;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <div class="config-container">
+        <h2>Configure Your Chatbot</h2>
+        <div id="error-message" class="error-message"></div>
+        <div id="success-message" class="success-message"></div>
+        <label for="title">Chatbot Title:</label>
+        <input type="text" id="title" placeholder="Enter your chatbot title">
+
+        <label for="system-message">System Message (Context):</label>
+        <textarea id="system-message" rows="4" placeholder="Enter the system message here"></textarea>
+
+        <label for="api-key">OpenAI API Key:</label>
+        <input type="text" id="api-key" placeholder="Enter your OpenAI API key">
+
+        <label for="header-color">Header Color:</label>
+        <input type="color" id="header-color" value="#4CAF50">
+
+        <label for="user-message-color">User Message Color:</label>
+        <input type="color" id="user-message-color" value="#dcedc8">
+
+        <label for="bot-message-color">Bot Message Color:</label>
+        <input type="color" id="bot-message-color" value="#e1f5fe">
+
+        <button onclick="configureChatbot()">Submit</button>
+    </div>
+
+    <script>
+        async function configureChatbot() {
+            const title = document.getElementById('title').value;
+            const systemMessage = document.getElementById('system-message').value;
+            const apiKey = document.getElementById('api-key').value;
+            const headerColor = document.getElementById('header-color').value;
+            const userMessageColor = document.getElementById('user-message-color').value;
+            const botMessageColor = document.getElementById('bot-message-color').value;
+
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+
+            if (!title || !systemMessage || !apiKey) {
+                errorMessage.innerText = 'Please enter a title, system message, and API key.';
+                return;
+            }
+
+            const response = await fetch('/.netlify/functions/generate-chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    title,
+                    systemMessage,
+                    apiKey,
+                    headerColor,
+                    userMessageColor,
+                    botMessageColor,
+                }),
+            });
+
+            if (response.ok) {
+                const { url } = await response.json();
+                successMessage.innerText = `Chatbot created successfully! Access it here: ${url}`;
+            } else {
+                errorMessage.innerText = 'Error creating chatbot. Please try again.';
+            }
+        }
+    </script>
+</body>
+</html>

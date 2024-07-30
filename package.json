@@ -1,0 +1,19 @@
+{
+  "name": "my-chatbot-project",
+  "version": "1.0.0",
+  "description": "Customizable Chatbot Project",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo 'No build step required' ",
+    "start": "netlify dev"
+  },
+  "dependencies": {
+    "fs-extra": "^9.0.1",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "netlify-cli": "^3.29.14"
+  },
+  "author": "Your Name",
+  "license": "MIT"
+}

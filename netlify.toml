@@ -1,0 +1,8 @@
+[build]
+  publish = "public"
+  functions = "src/functions"
+
+[[redirects]]
+  from = "/generated-chatbots/*"
+  to = "/src/generated-chatbots/:splat"
+  status = 200

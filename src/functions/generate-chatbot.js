@@ -2,8 +2,11 @@ const fs = require('fs-extra');
 const path = require('path');
 
 exports.handler = async (event) => {
+    console.log('Received event:', event);
     try {
         const { title, systemMessage, apiKey, headerColor, userMessageColor, botMessageColor } = JSON.parse(event.body);
+
+        console.log('Parsed body:', { title, systemMessage, apiKey, headerColor, userMessageColor, botMessageColor });
 
         const chatbotHtml = `
 <!DOCTYPE html>
@@ -176,6 +179,8 @@ exports.handler = async (event) => {
 
         const fileName = `${Date.now()}.html`;
         const filePath = path.join(__dirname, `../generated-chatbots/${fileName}`);
+
+        console.log('Writing file to:', filePath);
 
         await fs.outputFile(filePath, chatbotHtml);
 

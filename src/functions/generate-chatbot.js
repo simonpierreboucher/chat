@@ -1,10 +1,11 @@
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 
 exports.handler = async (event) => {
-    const { title, systemMessage, apiKey, headerColor, userMessageColor, botMessageColor } = JSON.parse(event.body);
+    try {
+        const { title, systemMessage, apiKey, headerColor, userMessageColor, botMessageColor } = JSON.parse(event.body);
 
-    const chatbotHtml = `
+        const chatbotHtml = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -173,11 +174,22 @@ exports.handler = async (event) => {
 </body>
 </html>`;
 
-    const filePath = path.join(__dirname, `../generated-chatbots/${Date.now()}.html`);
-    fs.writeFileSync(filePath, chatbotHtml);
+        const fileName = `${Date.now()}.html`;
+        const filePath = path.join(__dirname, `../generated-chatbots/${fileName}`);
 
-    return {
-        statusCode: 200,
-        body: JSON.stringify({ url: `/generated-chatbots/${path.basename(filePath)}` }),
-    };
+        await fs.outputFile(filePath, chatbotHtml);
+
+        console.log(`Chatbot HTML generated at: ${filePath}`);
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ url: `/generated-chatbots/${fileName}` }),
+        };
+    } catch (error) {
+        console.error('Error generating chatbot:', error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: 'Error generating chatbot' }),
+        };
+    }
 };
